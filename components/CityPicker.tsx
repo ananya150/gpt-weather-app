@@ -17,7 +17,9 @@ type option ={
 type stateOption = {
     value: {
         name: string,
-        stateCode: string
+        stateCode: string,
+        latitude: string,
+        longitude: string,
     },
     name: string
 } | null;
@@ -47,7 +49,9 @@ const stateOptions = (isoCode: string) => {
         State.getStatesOfCountry(isoCode).map((state) => ({
             value: {
                 name: state.name,
-                stateCode: state.isoCode
+                stateCode: state.isoCode,
+                latitude: state.latitude,
+                logitude: state.longitude,
             },
             label: state.name
         }))
@@ -86,7 +90,10 @@ const CityPicker = () => {
 
     const handleSelectedState = (option: stateOption) => {
         setSelectedCity(null);
-        setSelectedState(option)
+        setSelectedState(option);
+        if(City.getCitiesOfState(selectedCountry?.value.isoCode || '', option?.value.stateCode || '').length === 0){
+            router.push(`/location/${option?.value.name}/${option?.value.latitude}/${option?.value.longitude}`)
+        }
     }
 
     const handleSelectedCity = (option: cityOption) => {
