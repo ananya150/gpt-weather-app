@@ -1,6 +1,6 @@
 interface CurrentWeather {
     is_day: number
-    temperature: any
+    temperature: number
     time: string
     weathercode: number
     winddirection: number
