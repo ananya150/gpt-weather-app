@@ -20,37 +20,27 @@ export const getApiCall = async (url: string) => {
 
 const TemperatureChart = ({results , lat , long}: Props) => {
 
-    const [data1 , setData1] = React.useState<any[]>([]);
-    const [data2 , setData2] = React.useState<any[]>([]);
-    const [data3 , setData3] = React.useState<any[]>([]);
+  const hourly = results.hourly.time.map((time: any) => new Date(time).toLocaleString("en-US" , {
+    hour: "numeric",
+    hour12: false
+    })).slice(0,24)
 
+    const data1 = hourly.map((hour: any , i: any) => ({
+      time: Number(hour),
+      "UV Index": results.hourly.uv_index[i],
+      "Temperature (C)": results.hourly.temperature_2m[i],
+  }))
 
-    useEffect(() => {
-      const fetch = async () => {
-        const res = await getApiCall(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=uv_index,uv_index_clear_sky&timezone=Europe%2FLondon`)
-        const hourly = res.hourly.time.map((time: any) => new Date(time).toLocaleString("en-US" , {
-            hour: "numeric",
-            hour12: false
-        })).slice(0,24)
-        const data1 = hourly.map((hour: any , i: any) => ({
-            time: Number(hour),
-            "UV Index": results.hourly.uv_index[i],
-            "Temperature (C)": results.hourly.temperature_2m[i],
-        }))
-        setData1(data1)
-        const data2 = hourly.map((hour: any , i: any) => ({
-          time: Number(hour),
-          "Rain (%)": results.hourly.precipitation_probability[i],
-      }))
-      setData2(data2);
-      const data3 = hourly.map((hour: any , i: any) => ({
-        time: Number(hour),
-        "Humidity (%)": results.hourly.relativehumidity_2m[i],
-    }))
-    setData3(data3);
-      }
-      fetch();
-    }, [])
+    const data2 = hourly.map((hour: any , i: any) => ({
+      time: Number(hour),
+      "Rain (%)": results.hourly.precipitation_probability[i],
+  }))
+
+  const data3 = hourly.map((hour: any , i: any) => ({
+    time: Number(hour),
+    "Humidity (%)": results.hourly.relativehumidity_2m[i],
+  }))
+
   
 const dataFomatter = (number: number) => `${number} °C`;
 const dataFomatter2 = (number: number) => `${number} %`;
